@@ -1,0 +1,21 @@
+{
+  "name": "auth-service",
+  "version": "1.0.0",
+  "description": "The user management service",
+  "homepage": "https://github.com/SimpleGuruji/pizza-delivery-b-auth-service#readme",
+  "bugs": {
+    "url": "https://github.com/SimpleGuruji/pizza-delivery-b-auth-service/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimpleGuruji/pizza-delivery-b-auth-service.git"
+  },
+  "license": "ISC",
+  "author": "Amit Kumar <kumaramit957014@gmail.com>",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
