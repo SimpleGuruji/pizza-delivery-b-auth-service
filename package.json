@@ -1,35 +1,42 @@
 {
-  "name": "auth-service",
-  "version": "1.0.0",
-  "description": "The user management service",
-  "homepage": "https://github.com/SimpleGuruji/pizza-delivery-b-auth-service#readme",
-  "bugs": {
-    "url": "https://github.com/SimpleGuruji/pizza-delivery-b-auth-service/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SimpleGuruji/pizza-delivery-b-auth-service.git"
-  },
-  "license": "ISC",
-  "author": "Amit Kumar <kumaramit957014@gmail.com>",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node src/server.js",
-    "format:check": "prettier . --check",
-    "format:fix": "prettier . --write",
-    "lint:check": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepare": "husky"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.25.1",
-    "@types/node": "^22.14.1",
-    "eslint": "^9.25.1",
-    "husky": "^9.1.7",
-    "prettier": "3.5.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0"
-  }
+    "name": "auth-service",
+    "version": "1.0.0",
+    "description": "The user management service",
+    "homepage": "https://github.com/SimpleGuruji/pizza-delivery-b-auth-service#readme",
+    "bugs": {
+        "url": "https://github.com/SimpleGuruji/pizza-delivery-b-auth-service/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/SimpleGuruji/pizza-delivery-b-auth-service.git"
+    },
+    "license": "ISC",
+    "author": "Amit Kumar <kumaramit957014@gmail.com>",
+    "type": "commonjs",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node src/server.js",
+        "format:check": "prettier . --check",
+        "format:fix": "prettier . --write",
+        "lint:check": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepare": "husky"
+    },
+    "lint-staged": {
+        "*.ts": [
+            "npm run format:fix ",
+            "npm run lint:fix"
+        ]
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.25.1",
+        "@types/node": "^22.14.1",
+        "eslint": "^9.25.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.5.1",
+        "prettier": "3.5.3",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.31.0"
+    }
 }
