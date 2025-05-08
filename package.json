@@ -15,7 +15,7 @@
     "type": "commonjs",
     "main": "index.js",
     "scripts": {
-        "dev": " cross-env NODE_ENV=dev nodemon --legacy-watch src/server.ts",
+        "dev": "cross-env NODE_ENV=dev nodemon --legacy-watch src/server.ts",
         "format:check": "prettier . --check",
         "format:fix": "prettier . --write",
         "lint:check": "eslint .",
