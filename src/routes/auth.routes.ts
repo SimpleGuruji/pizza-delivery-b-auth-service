@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { RequestHandler, Request, Response } from 'express'
 import { AuthController } from '../controllers/AuthController'
 const router = express.Router()
 import { UserService } from '../services/UserService'
@@ -9,6 +9,8 @@ const userRepository = AppDataSource.getRepository(User)
 const userService = new UserService(userRepository)
 const authController = new AuthController(userService)
 
-router.post('/register', (req, res) => authController.register(req, res))
+router.post('/register', (async (req: Request, res: Response) => {
+    await authController.register(req, res)
+}) as RequestHandler)
 
 export default router
