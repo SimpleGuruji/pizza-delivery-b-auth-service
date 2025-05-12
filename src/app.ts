@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', userRouter)
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
     logger.error(err.message)
     const statusCode = err.statusCode || 500

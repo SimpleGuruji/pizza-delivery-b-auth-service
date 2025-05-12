@@ -3,7 +3,6 @@ import app from '../../src/app'
 import { DataSource } from 'typeorm'
 import { User } from '../../src/entity/User'
 import { AppDataSource } from '../../src/config/data-source'
-import { truncateTables } from '../utils'
 import { Roles } from '../../src/constants'
 
 describe('POST /auth/register', () => {
@@ -105,15 +104,63 @@ describe('POST /auth/register', () => {
             }
 
             // Act
-            const response = await request(app)
-                .post('/auth/register')
-                .send(userData)
+            await request(app).post('/auth/register').send(userData)
 
             // Assert
             const repository = connection.getRepository(User)
             const users = await repository.find()
             expect(users[0]).toHaveProperty('role')
             expect(users[0].role).toBe(Roles.CUSTOMER)
+        })
+
+        it('it shoulld store the hash of the password in the database ', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Rakesh',
+                lastName: 'Singh',
+                email: 'rakesh@mern.space',
+                password: 'password',
+            }
+
+            // Act
+
+            await request(app).post('/auth/register').send(userData)
+
+            // Assert
+            const repository = connection.getRepository(User)
+            const users = await repository.find()
+
+            expect(users[0].password).not.toBe(userData.password)
+            expect(users[0].password).toHaveLength(60)
+            expect(users[0].password).toMatch(/^\$2b\$\d+\$/)
+        })
+
+        it('should return 400 statuscode if email is already exists', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Rakesh',
+                lastName: 'Singh',
+                email: 'rakesh@mern.space',
+                password: 'password',
+            }
+
+            const repository = connection.getRepository(User)
+            await repository.save({
+                ...userData,
+                role: Roles.CUSTOMER,
+            })
+
+            // Act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
+
+            const users = await repository.find()
+
+            // Assert
+
+            expect(response.statusCode).toBe(400)
+            expect(users).toHaveLength(1)
         })
     })
 
