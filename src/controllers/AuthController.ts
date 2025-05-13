@@ -2,6 +2,7 @@ import { NextFunction, Response } from 'express'
 import { RegisterUserRequest } from '../types'
 import { UserService } from '../services/UserService'
 import { Logger } from 'winston'
+import { validationResult } from 'express-validator'
 
 export class AuthController {
     constructor(
@@ -14,6 +15,13 @@ export class AuthController {
         res: Response,
         next: NextFunction,
     ) {
+        // Validate the request
+
+        const validationErrors = validationResult(req)
+        if (!validationErrors.isEmpty()) {
+            return res.status(400).json({ errors: validationErrors.array() })
+        }
+
         const { firstName, lastName, email, password } = req.body
 
         this.logger.debug('New request to register user', {
