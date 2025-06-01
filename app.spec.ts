@@ -1,6 +1,6 @@
 import app from './src/app'
-import { calculateDiscount } from './src/utils'
 import request from 'supertest'
+import { calculateDiscount } from './src/utils'
 
 describe.skip('App', () => {
     it('should return correct discount amount', () => {
