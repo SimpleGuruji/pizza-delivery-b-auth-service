@@ -9,7 +9,7 @@ import { Repository } from 'typeorm'
 
 export class TokenService {
     constructor(private refreshTokenRepository: Repository<RefreshToken>) {}
-    generateAcceessToken(payload: JwtPayload) {
+    generateAccessToken(payload: JwtPayload) {
         let privateKey: Buffer
         // Read the private key from the file
         try {
