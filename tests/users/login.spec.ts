@@ -4,6 +4,8 @@ import request from 'supertest'
 import app from '../../src/app'
 import { Roles } from '../../src/constants'
 import { isJwt } from '../utils'
+import bcrypt from 'bcrypt'
+import { User } from '../../src/entity/User'
 
 describe('POST /auth/login', () => {
     let connection: DataSource
@@ -28,10 +30,16 @@ describe('POST /auth/login', () => {
                 lastName: 'Singh',
                 email: 'rakesh@mern.space',
                 password: 'password',
-                role: Roles.CUSTOMER,
             }
 
-            await request(app).post('/auth/register').send(userData)
+            const hasedPassord = await bcrypt.hash(userData.password, 10)
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({
+                ...userData,
+                password: hasedPassord,
+                role: Roles.CUSTOMER,
+            })
 
             const response = await request(app)
                 .post('/auth/login')
@@ -46,10 +54,16 @@ describe('POST /auth/login', () => {
                 lastName: 'Singh',
                 email: 'rakesh@mern.space',
                 password: 'password',
-                role: Roles.CUSTOMER,
             }
 
-            await request(app).post('/auth/register').send(userData)
+            const hasedPassord = await bcrypt.hash(userData.password, 10)
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({
+                ...userData,
+                password: hasedPassord,
+                role: Roles.CUSTOMER,
+            })
 
             const response = await request(app)
                 .post('/auth/login')
@@ -64,10 +78,16 @@ describe('POST /auth/login', () => {
                 lastName: 'Singh',
                 email: 'rakesh@mern.space',
                 password: 'password',
-                role: Roles.CUSTOMER,
             }
 
-            await request(app).post('/auth/register').send(userData)
+            const hasedPassord = await bcrypt.hash(userData.password, 10)
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({
+                ...userData,
+                password: hasedPassord,
+                role: Roles.CUSTOMER,
+            })
 
             const response = await request(app)
                 .post('/auth/login')
@@ -94,6 +114,31 @@ describe('POST /auth/login', () => {
 
             expect(isJwt(accessToken)).toBeTruthy()
             expect(isJwt(refreshToken)).toBeTruthy()
+        })
+
+        it('should return 401 status code if password is incorrect', async () => {
+            const userData = {
+                firstName: 'Rakesh',
+                lastName: 'Singh',
+                email: 'rakesh@mern.space',
+                password: 'password',
+            }
+
+            const hasedPassord = await bcrypt.hash(userData.password, 10)
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({
+                ...userData,
+                password: hasedPassord,
+                role: Roles.CUSTOMER,
+            })
+
+            const response = await request(app).post('/auth/login').send({
+                email: userData.email,
+                password: 'wrongpassword',
+            })
+
+            expect(response.statusCode).toBe(401)
         })
     })
 
@@ -155,10 +200,16 @@ describe('POST /auth/login', () => {
                 lastName: 'Singh',
                 email: 'rakesh@mern.space',
                 password: 'password',
-                role: Roles.CUSTOMER,
             }
 
-            await request(app).post('/auth/register').send(userData)
+            const hasedPassord = await bcrypt.hash(userData.password, 10)
+
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({
+                ...userData,
+                password: hasedPassord,
+                role: Roles.CUSTOMER,
+            })
 
             const response = await request(app).post('/auth/login').send({
                 email: 'rohit@mern.space',
@@ -166,25 +217,6 @@ describe('POST /auth/login', () => {
             })
 
             expect(response.statusCode).toBe(404)
-        })
-
-        it('should return 401 status code if password is incorrect', async () => {
-            const userData = {
-                firstName: 'Rakesh',
-                lastName: 'Singh',
-                email: 'rakesh@mern.space',
-                password: 'password',
-                role: Roles.CUSTOMER,
-            }
-
-            await request(app).post('/auth/register').send(userData)
-
-            const response = await request(app).post('/auth/login').send({
-                email: userData.email,
-                password: 'wrongpassword',
-            })
-
-            expect(response.statusCode).toBe(401)
         })
     })
 })
