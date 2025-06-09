@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express'
-import { LoginUserRequest, RegisterUserRequest } from '../types'
+import { AuthRequest, LoginUserRequest, RegisterUserRequest } from '../types'
 import { UserService } from '../services/UserService'
 import { Logger } from 'winston'
 import { validationResult } from 'express-validator'
@@ -167,5 +167,13 @@ export class AuthController {
 
         // Return user ID in the response
         return res.status(200).json({ id: existingUser.id })
+    }
+
+    async self(req: AuthRequest, res: Response) {
+        // token req.auth.sub
+
+        const user = await this.userService.findById(Number(req.auth.sub))
+
+        res.json({ ...user, password: undefined })
     }
 }

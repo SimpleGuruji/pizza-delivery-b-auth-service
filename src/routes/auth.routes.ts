@@ -15,6 +15,8 @@ import { TokenService } from '../services/TokenService'
 import { RefreshToken } from '../entity/RefreshToken'
 import loginValidator from '../validators/login.validator'
 import { CredentialService } from '../services/CredentialService'
+import authenticate from '../middlewares/authenticate'
+import { AuthRequest } from '../types'
 
 const userRepository = AppDataSource.getRepository(User)
 const refreshTokenRepository = AppDataSource.getRepository(RefreshToken)
@@ -42,6 +44,12 @@ router.post('/login', loginValidator, (async (
     next: NextFunction,
 ) => {
     await authController.login(req, res, next)
+}) as RequestHandler)
+
+//without next function give me self endpoint
+
+router.get('/self', authenticate, (async (req: Request, res: Response) => {
+    await authController.self(req as AuthRequest, res)
 }) as RequestHandler)
 
 export default router
