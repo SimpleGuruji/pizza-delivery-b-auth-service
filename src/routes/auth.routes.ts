@@ -17,6 +17,8 @@ import loginValidator from '../validators/login.validator'
 import { CredentialService } from '../services/CredentialService'
 import authenticate from '../middlewares/authenticate'
 import { AuthRequest } from '../types'
+import validateRefreshToken from '../middlewares/validateRefreshToken'
+import parseRefreshToken from '../middlewares/parseRefreshToken'
 
 const userRepository = AppDataSource.getRepository(User)
 const refreshTokenRepository = AppDataSource.getRepository(RefreshToken)
@@ -51,5 +53,21 @@ router.post('/login', loginValidator, (async (
 router.get('/self', authenticate, (async (req: Request, res: Response) => {
     await authController.self(req as AuthRequest, res)
 }) as RequestHandler)
+
+router.post(
+    '/refresh',
+    validateRefreshToken,
+    async (req: Request, res: Response, next: NextFunction) => {
+        await authController.refresh(req as AuthRequest, res, next)
+    },
+)
+router.post(
+    '/logout',
+    authenticate,
+    parseRefreshToken,
+    async (req: Request, res: Response, next: NextFunction) => {
+        await authController.logout(req as AuthRequest, res, next)
+    },
+)
 
 export default router

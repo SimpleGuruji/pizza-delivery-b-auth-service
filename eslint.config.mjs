@@ -28,6 +28,7 @@ export default tseslint.config(
             'jest.config.js',
             'generateScripts.mjs',
             'scripts/generateScripts.mjs',
+            'scripts/convertPemToJwk.mjs',
         ],
     },
 )
