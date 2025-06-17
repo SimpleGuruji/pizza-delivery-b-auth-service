@@ -214,8 +214,6 @@ describe('POST/auth/logout', () => {
                 }
             })
 
-            console.log(clearedAccessToken)
-
             expect(clearedAccessToken).toBe('')
             expect(clearedRefreshToken).toBe('')
         })
