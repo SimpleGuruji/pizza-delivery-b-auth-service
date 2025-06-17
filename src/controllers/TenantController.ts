@@ -7,7 +7,7 @@ import createHttpError from 'http-errors'
 
 export class TenantController {
     constructor(
-        private tenatService: TenantService,
+        private tenantService: TenantService,
         private logger: Logger,
     ) {}
     async create(req: TenantRequest, res: Response, next: NextFunction) {
@@ -20,7 +20,7 @@ export class TenantController {
         this.logger.debug('Creating a new Tenant', req.body)
 
         try {
-            const tenant = await this.tenatService.create({ name, address })
+            const tenant = await this.tenantService.create({ name, address })
             this.logger.info('Tenant created successfully', { id: tenant.id })
         } catch (error) {
             return next(error)
@@ -48,7 +48,7 @@ export class TenantController {
         this.logger.debug('Request for updating a tenant', req.body)
 
         try {
-            await this.tenatService.update(Number(tenantId), { name, address })
+            await this.tenantService.update(Number(tenantId), { name, address })
             return res.json({ id: Number(tenantId) })
         } catch (error) {
             next(error)
@@ -65,7 +65,7 @@ export class TenantController {
         }
 
         try {
-            const tenant = await this.tenatService.getOne(Number(tenantId))
+            const tenant = await this.tenantService.getOne(Number(tenantId))
             return res.json(tenant)
         } catch (error) {
             next(error)
@@ -74,10 +74,30 @@ export class TenantController {
 
     async getAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const tenants = await this.tenatService.getAll()
+            const tenants = await this.tenantService.getAll()
             return res.json(tenants)
         } catch (error) {
             next(error)
+        }
+    }
+
+    async destroy(req: Request, res: Response, next: NextFunction) {
+        const tenantId = req.params.id
+
+        if (isNaN(Number(tenantId))) {
+            next(createHttpError(400, 'Invalid url param.'))
+            return
+        }
+
+        try {
+            await this.tenantService.deleteById(Number(tenantId))
+
+            this.logger.info('Tenant has been deleted', {
+                id: Number(tenantId),
+            })
+            res.json({ id: Number(tenantId) })
+        } catch (err) {
+            next(err)
         }
     }
 }

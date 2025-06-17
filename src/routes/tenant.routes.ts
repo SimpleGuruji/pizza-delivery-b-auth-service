@@ -51,4 +51,13 @@ router.get(
     },
 )
 
+router.delete(
+    '/:id',
+    authenticate,
+    canAccessAdmin,
+    async (req: Request, res: Response, next: NextFunction) => {
+        await tenantController.destroy(req, res, next)
+    },
+)
+
 export default router
