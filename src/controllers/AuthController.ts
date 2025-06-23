@@ -8,6 +8,7 @@ import { TokenService } from '../services/TokenService'
 
 import createHttpError from 'http-errors'
 import { CredentialService } from '../services/CredentialService'
+import { Roles } from '../constants'
 
 export class AuthController {
     constructor(
@@ -29,12 +30,13 @@ export class AuthController {
             return res.status(400).json({ errors: validationErrors.array() })
         }
 
-        const { firstName, lastName, email, password } = req.body
+        const { firstName, lastName, email, password, role } = req.body
 
         this.logger.debug('New request to register user', {
             firstName,
             lastName,
             email,
+            role,
             password: '********',
         })
 
@@ -44,6 +46,7 @@ export class AuthController {
                 lastName,
                 email,
                 password,
+                role: Roles.CUSTOMER,
             })
 
             this.logger.info('User created successfully', {
@@ -107,7 +110,8 @@ export class AuthController {
         })
 
         // Check if user exists
-        const existingUser = await this.userService.findByEmail(email)
+        const existingUser =
+            await this.userService.findByEmailWithPassword(email)
 
         if (!existingUser) {
             const err = createHttpError(404, 'User not found')

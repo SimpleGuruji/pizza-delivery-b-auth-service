@@ -22,14 +22,14 @@ export class User {
     @Column({ unique: true })
     email: string
 
-    @Column()
+    @Column({ select: false })
     password: string
 
     @Column()
     role: string
 
     @ManyToOne(() => Tenant)
-    tenant: Tenant
+    tenant: Tenant | null
 
     @CreateDateColumn()
     createdAt: number

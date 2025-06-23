@@ -80,6 +80,7 @@ describe('POST /auth/register', () => {
                 lastName: 'Singh',
                 email: 'rakesh@mern.space',
                 password: 'password',
+                role: Roles.CUSTOMER,
             }
 
             const response = await request(app)
@@ -121,7 +122,7 @@ describe('POST /auth/register', () => {
             await request(app).post('/auth/register').send(userData)
 
             const repository = connection.getRepository(User)
-            const users = await repository.find()
+            const users = await repository.find({ select: ['password'] })
 
             expect(users[0].password).not.toBe(userData.password)
             expect(users[0].password).toHaveLength(60)

@@ -1,15 +1,21 @@
 import { Repository } from 'typeorm'
 import { User } from '../entity/User'
-import { UserData } from '../types'
+import { LimitedUserData, UserData } from '../types'
 import createHttpError from 'http-errors'
-import { Roles } from '../constants'
 import bcrypt from 'bcrypt'
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
     // Constructor logic if needed
 
-    async create({ firstName, lastName, email, password }: UserData) {
+    async create({
+        firstName,
+        lastName,
+        email,
+        password,
+        role,
+        tenantId,
+    }: UserData) {
         // Check if user already exists
         const existingUser = await this.userRepository.findOne({
             where: { email },
@@ -29,7 +35,8 @@ export class UserService {
                 lastName,
                 email,
                 password: hashedPassword,
-                role: Roles.CUSTOMER, // Default role
+                role,
+                tenantId: tenantId ? { id: tenantId } : undefined,
             })
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
@@ -38,19 +45,93 @@ export class UserService {
         }
     }
 
-    async findByEmail(email: string) {
-        const user = await this.userRepository.findOne({
-            where: { email },
-        })
+    async findByEmailWithPassword(email: string) {
+        try {
+            return await this.userRepository.findOne({
+                where: { email },
+                select: [
+                    'id',
+                    'firstName',
+                    'lastName',
+                    'email',
+                    'password',
+                    'role',
+                    'tenant',
+                    'createdAt',
+                    'updatedAt',
+                ],
+            })
 
-        return user
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (err) {
+            const error = createHttpError(
+                500,
+                'Failed to find the user from the  database by email',
+            )
+            throw error
+        }
     }
 
     async findById(id: number) {
-        const user = await this.userRepository.findOne({
-            where: { id },
-        })
+        try {
+            return await this.userRepository.findOne({
+                where: { id },
+            })
 
-        return user
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (err) {
+            const error = createHttpError(
+                500,
+                'Failed to find the user from the  database by id',
+            )
+            throw error
+        }
+    }
+
+    async findAll() {
+        try {
+            return await this.userRepository.find()
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (err) {
+            const error = createHttpError(
+                500,
+                'Failed to find all users from the database ',
+            )
+            throw error
+        }
+    }
+
+    async deleteById(id: number) {
+        try {
+            return await this.userRepository.delete(id)
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (err) {
+            const error = createHttpError(
+                500,
+                'Failed to delete the user in the database',
+            )
+            throw error
+        }
+    }
+
+    async update(
+        userId: number,
+        { firstName, lastName, role }: LimitedUserData,
+    ) {
+        try {
+            return await this.userRepository.update(userId, {
+                firstName,
+                lastName,
+                role,
+            })
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (err) {
+            const error = createHttpError(
+                500,
+                'Failed to update the user in the database',
+            )
+            throw error
+        }
     }
 }
