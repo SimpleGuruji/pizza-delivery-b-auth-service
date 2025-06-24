@@ -42,14 +42,9 @@ router.get(
         await tenantController.getOne(req, res, next)
     },
 )
-router.get(
-    '/',
-    authenticate,
-    canAccessAdmin,
-    async (req: Request, res: Response, next: NextFunction) => {
-        await tenantController.getAll(req, res, next)
-    },
-)
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+    await tenantController.getAll(req, res, next)
+})
 
 router.delete(
     '/:id',

@@ -67,17 +67,4 @@ describe('GET /tenants', () => {
         expect((response.body as Record<string, string>).length).toBe(2)
         expect(allTenants).toHaveLength(2)
     })
-
-    it('should return 403 status code for non-admin access to all tenants', async () => {
-        const customerToken = jwks.token({
-            sub: 'user-id',
-            role: Roles.CUSTOMER,
-        })
-
-        const response = await request(app)
-            .get(`/tenants`)
-            .set('Cookie', [`accessToken=${customerToken}`])
-
-        expect(response.statusCode).toBe(403)
-    })
 })
