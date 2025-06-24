@@ -29,6 +29,8 @@ export default tseslint.config(
             'generateScripts.mjs',
             'scripts/generateScripts.mjs',
             'scripts/convertPemToJwk.mjs',
+            'tests',
+            '*.spec.ts',
         ],
     },
 )
