@@ -1,5 +1,3 @@
-import path from 'path'
-import fs from 'fs'
 import { JwtPayload, sign } from 'jsonwebtoken'
 import createHttpError from 'http-errors'
 import { Config } from '../config'
@@ -10,17 +8,15 @@ import { Repository } from 'typeorm'
 export class TokenService {
     constructor(private refreshTokenRepository: Repository<RefreshToken>) {}
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: Buffer
-        // Read the private key from the file
+        let privateKey: string
+
         try {
-            privateKey = fs.readFileSync(
-                path.join(__dirname, '../../certs/private.pem'),
-            )
+            privateKey = Config.PRIVATE_KEY!
+
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             const err = createHttpError(500, 'Error reading private key file')
             throw err
-            return
         }
 
         const accessToken = sign(payload, privateKey, {

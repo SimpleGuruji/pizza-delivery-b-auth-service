@@ -31,6 +31,7 @@ export default tseslint.config(
             'scripts/convertPemToJwk.mjs',
             'tests',
             '*.spec.ts',
+            'coverage',
         ],
     },
 )
