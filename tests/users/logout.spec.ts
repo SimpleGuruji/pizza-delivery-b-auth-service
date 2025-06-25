@@ -198,11 +198,15 @@ describe('POST/auth/logout', () => {
                 ])
                 .send()
 
-            let clearedAccessToken = null
-            let clearedRefreshToken = null
+            interface Headers {
+                ['set-cookie']: string[]
+            }
 
+            // Assert
+            let clearedAccessToken = ''
+            let clearedRefreshToken = ''
             const cookies =
-                (response.headers['set-cookie'] as unknown as string[]) || []
+                (response.headers as unknown as Headers)['set-cookie'] || []
 
             cookies.forEach((cookie) => {
                 if (cookie.startsWith('accessToken=')) {

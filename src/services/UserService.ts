@@ -16,18 +16,21 @@ export class UserService {
         role,
         tenantId,
     }: UserData) {
-        // Check if user already exists
-        const existingUser = await this.userRepository.findOne({
-            where: { email },
+        const hashedPassword = await bcrypt.hash(password, 10)
+
+        const user = await this.userRepository.findOne({
+            where: {
+                email: email,
+            },
         })
-        if (existingUser) {
-            const err = createHttpError(400, 'User already exists')
+
+        if (user) {
+            const err = createHttpError(
+                400,
+                'user with same email id already exists!!',
+            )
             throw err
         }
-
-        // Hash the password
-        const saltRounds = 10
-        const hashedPassword = await bcrypt.hash(password, saltRounds)
 
         try {
             return await this.userRepository.save({
@@ -38,9 +41,11 @@ export class UserService {
                 role,
                 tenantId: tenantId ? { id: tenantId } : undefined,
             })
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            const err = createHttpError(500, 'Failed to store user')
+        } catch {
+            const err = createHttpError(
+                500,
+                'failed to store the data in database',
+            )
             throw err
         }
     }
