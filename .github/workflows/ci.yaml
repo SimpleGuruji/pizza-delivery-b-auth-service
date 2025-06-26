@@ -48,7 +48,7 @@ jobs:
         runs-on: ubuntu-latest
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
-            IMAGE_NAME: codersgyan/mernspace-c-auth-service
+            IMAGE_NAME: simple_guruji/mernspace-c-auth-service
             IMAGE_TAG: build-${{ github.run_number }}
         steps:
             - name: Checkout repository
