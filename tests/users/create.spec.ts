@@ -109,4 +109,32 @@ describe('POST/users', () => {
         // Check the response status code
         expect(response.statusCode).toBe(403)
     })
+
+    it('should return 500 status code if create fails', async () => {
+        // Mock the repository save method to throw an error
+        const userRepository = connection.getRepository(User)
+        jest.spyOn(userRepository, 'save').mockRejectedValue(
+            new Error('Database error'),
+        )
+
+        const adminToken = jwks.token({
+            sub: '1',
+            role: Roles.ADMIN,
+        })
+
+        const userData = {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            password: 'password123',
+            role: Roles.CUSTOMER,
+        }
+
+        const response = await request(app)
+            .post('/users')
+            .send(userData)
+            .set('Cookie', [`accessToken=${adminToken}`])
+
+        expect(response.statusCode).toBe(500)
+    })
 })

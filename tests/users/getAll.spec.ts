@@ -119,4 +119,23 @@ describe('GET /users', () => {
 
         expect(response.statusCode).toBe(403)
     })
+
+    it('should return 500 status code if find all fails', async () => {
+        const userRepository = connection.getRepository(User)
+
+        jest.spyOn(userRepository, 'findOne').mockRejectedValue(
+            new Error('Database error'),
+        )
+
+        const adminToken = jwks.token({
+            sub: '1',
+            role: Roles.ADMIN,
+        })
+
+        const response = await request(app)
+            .get('/users/1')
+            .set('Cookie', [`accessToken=${adminToken}`])
+
+        expect(response.statusCode).toBe(500)
+    })
 })
