@@ -159,7 +159,7 @@ describe('GET/users/:id', () => {
         const userRepository = connection.getRepository(User)
 
         jest.spyOn(userRepository, 'findOne').mockRejectedValue(
-            new Error('Database error'),
+            new Error('Failed to find the user from the  database by id'),
         )
 
         const adminToken = jwks.token({
