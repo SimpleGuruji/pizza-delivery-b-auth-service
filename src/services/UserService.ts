@@ -3,6 +3,7 @@ import { User } from '../entity/User'
 import { LimitedUserData, UserData } from '../types'
 import createHttpError from 'http-errors'
 import bcrypt from 'bcrypt'
+import logger from '../config/logger'
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
@@ -41,12 +42,15 @@ export class UserService {
                 role,
                 tenantId: tenantId ? { id: tenantId } : undefined,
             })
-        } catch {
-            const err = createHttpError(
+        } catch (err) {
+            if (err instanceof Error) {
+                logger.error(err.message)
+            }
+            const error = createHttpError(
                 500,
-                'failed to store the data in database',
+                'Failed to create the user in the database',
             )
-            throw err
+            throw error
         }
     }
 
@@ -67,11 +71,14 @@ export class UserService {
                 ],
             })
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+             
         } catch (err) {
+            if (err instanceof Error) {
+                logger.error(err.message)
+            }
             const error = createHttpError(
                 500,
-                'Failed to find the user from the  database by email',
+                `Failed to find the user with ${email}  from the database`,
             )
             throw error
         }
@@ -83,11 +90,14 @@ export class UserService {
                 where: { id },
             })
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+             
         } catch (err) {
+            if (err instanceof Error) {
+                logger.error(err.message)
+            }
             const error = createHttpError(
                 500,
-                'Failed to find the user from the  database by id',
+                `Failed to find the user of ${id} from the database`,
             )
             throw error
         }
@@ -97,11 +107,14 @@ export class UserService {
         try {
             return await this.userRepository.find()
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+             
         } catch (err) {
+            if (err instanceof Error) {
+                logger.error(err.message)
+            }
             const error = createHttpError(
                 500,
-                'Failed to find all users from the database ',
+                'Failed to find all the users from the database',
             )
             throw error
         }
@@ -110,8 +123,10 @@ export class UserService {
     async deleteById(id: number) {
         try {
             return await this.userRepository.delete(id)
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (err) {
+            if (err instanceof Error) {
+                logger.error(err.message)
+            }
             const error = createHttpError(
                 500,
                 'Failed to delete the user in the database',
@@ -130,8 +145,11 @@ export class UserService {
                 lastName,
                 role,
             })
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+             
         } catch (err) {
+            if (err instanceof Error) {
+                logger.error(err.message)
+            }
             const error = createHttpError(
                 500,
                 'Failed to update the user in the database',
