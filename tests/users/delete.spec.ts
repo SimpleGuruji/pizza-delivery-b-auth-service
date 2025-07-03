@@ -102,14 +102,23 @@ describe('DELETE/users/:id', () => {
 
         const userRepository = connection.getRepository(User)
 
+        const user = await userRepository.save({
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            password: 'password',
+            role: Roles.CUSTOMER,
+            tenantId: '1',
+        })
+
         jest.spyOn(userRepository, 'delete').mockRejectedValue(
-            new Error('Database error'),
+            new Error('Failed to delete the user in the database'),
         )
 
         const adminToken = jwks.token({ sub: '1', role: Roles.ADMIN })
 
         const response = await request(app)
-            .delete(`/users/1`)
+            .delete(`/users/${user.id}`)
             .set('Cookie', [`accessToken=${adminToken}`])
 
         expect(response.statusCode).toBe(500)

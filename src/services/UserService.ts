@@ -41,7 +41,8 @@ export class UserService {
                 role,
                 tenantId: tenantId ? { id: tenantId } : undefined,
             })
-        } catch {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
             const err = createHttpError(
                 500,
                 'failed to store the data in database',

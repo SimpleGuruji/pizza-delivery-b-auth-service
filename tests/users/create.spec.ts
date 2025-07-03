@@ -114,7 +114,7 @@ describe('POST/users', () => {
         // Mock the repository save method to throw an error
         const userRepository = connection.getRepository(User)
         jest.spyOn(userRepository, 'save').mockRejectedValue(
-            new Error('Database error'),
+            new Error('failed to store the data in database'),
         )
 
         const adminToken = jwks.token({
