@@ -4,7 +4,7 @@ import request from 'supertest'
 import app from '../../src/app'
 import { Roles } from '../../src/constants'
 import { isJwt } from '../utils'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { User } from '../../src/entity/User'
 
 describe('POST /auth/login', () => {
